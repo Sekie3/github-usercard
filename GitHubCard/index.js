@@ -1,8 +1,19 @@
+import axios from 'axios';
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+let gitObject = {};
+axios.get('https://api.github.com/users/sekie3')
+  .then(response => {
+    gitObject = response.data;
+    document.querySelector('.cards').appendChild(createUsers(gitObject));
+  })
+  .catch (err => {
+    console.log(err);
+  })
+
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +39,62 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const friendsArray = ['https://api.github.com/users/tetondan','https://api.github.com/users/dustinmyers','https://api.github.com/users/justsml','https://api.github.com/users/luishrd','https://api.github.com/users/bigknell'];
+
+function createUsers(obj) {
+  const userWrapper = document.createElement('div');
+  const userImage = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const username = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const github = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  userWrapper.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  username.classList.add('username');
+
+  userWrapper.appendChild(userImage);
+  userWrapper.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  profile.appendChild(github);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+
+  userImage.src = obj.avatar_url;
+  name.textContent = obj.name;
+  username.textContent = obj.login;
+  location.textContent = `Location: ${obj.location}`;
+  github.href = obj.html_url;
+  profile.textContent = `Profile: ${github}`;
+  followers.textContent = `Followers: ${obj.followers}`;
+  following.textContent = `Following: ${obj.following}`;
+  bio.textContent = `Bio: ${obj.bio}`;
+  
+
+  return userWrapper;
+}
+
+friendsArray.forEach(element => {
+  axios.get(`${element}`)
+  .then(response => {
+    let friendObject = {};
+    friendObject = response.data;
+    document.querySelector('.cards').appendChild(createUsers(friendObject));
+  })
+  .catch (err => {
+    console.log(err);
+  })
+});
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
